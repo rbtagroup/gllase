@@ -4135,38 +4135,49 @@ body.light-mode button.primary {
    barevné oblasti dávají backdrop-filteru co rozmazávat.
 */
 html {
-  background: #030305;
+  background: #050d1f;
 }
 
 body {
+  /*
+     Navy Blue wallpaper — základ #050d1f (hluboká noc)
+     Zlatý odlesk vlevo nahoře dává hloubku a spojuje se s gold akcenty.
+     Středový navy přechod drží čitelnost panelů.
+     Backdrop-filter má teď dostatek barevného obsahu k rozmazání.
+  */
   background:
-    radial-gradient(ellipse 700px 500px at -8% -10%,
-      rgba(201, 168, 76, 0.18) 0%,
+    radial-gradient(ellipse 650px 500px at -6% -8%,
+      rgba(201, 168, 76, 0.28) 0%,
+      rgba(201, 168, 76, 0.06) 42%,
+      transparent 62%),
+    radial-gradient(ellipse 700px 600px at 110% 8%,
+      rgba(8, 24, 80, 0.90) 0%,
       transparent 55%),
-    radial-gradient(ellipse 600px 480px at 108% 5%,
-      rgba(14, 28, 80, 0.55) 0%,
+    radial-gradient(ellipse 900px 700px at 50% 110%,
+      rgba(4, 18, 60, 0.75) 0%,
+      transparent 58%),
+    radial-gradient(ellipse 500px 400px at 100% 100%,
+      rgba(20, 50, 130, 0.45) 0%,
       transparent 52%),
-    radial-gradient(ellipse 500px 400px at 55% 105%,
-      rgba(80, 20, 100, 0.22) 0%,
-      transparent 55%),
-    radial-gradient(ellipse 400px 300px at 100% 100%,
-      rgba(20, 80, 60, 0.18) 0%,
-      transparent 52%),
-    linear-gradient(160deg, #04030a 0%, #070510 50%, #03040a 100%);
+    linear-gradient(155deg,
+      #081628 0%,
+      #050d1f 40%,
+      #071422 70%,
+      #040c1a 100%);
   background-attachment: fixed;
   color: var(--ob-text);
 }
 
-/* Zlatý light leak přes celou stránku — velmi jemný */
+/* Zlatý light leak — výraznější na navy pozadí */
 body::before {
   background:
-    radial-gradient(ellipse 600px 400px at -5% -8%,
-      rgba(201, 168, 76, 0.07),
-      transparent 58%),
-    linear-gradient(115deg,
+    radial-gradient(ellipse 700px 450px at -5% -8%,
+      rgba(201, 168, 76, 0.12),
+      transparent 55%),
+    linear-gradient(125deg,
       transparent 0%,
-      rgba(255, 255, 255, 0.018) 35%,
-      transparent 60%);
+      rgba(255, 255, 255, 0.022) 30%,
+      transparent 55%);
   opacity: 1;
 }
 
@@ -4211,13 +4222,13 @@ body::before {
 
 /* ---- 4. Glass shell (formulářová sekce) ---- */
 .glass-shell {
-  background: var(--lg-bg-neutral);
+  background: rgba(8, 20, 52, 0.62);
   backdrop-filter: var(--lg-blur);
   -webkit-backdrop-filter: var(--lg-blur);
-  border: var(--lg-border);
+  border: 1px solid rgba(255, 255, 255, 0.13);
   box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.50),
-    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    0 20px 50px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
   position: relative;
   overflow: hidden;
 }
@@ -4256,13 +4267,13 @@ body::before {
 
 /* ---- 5. Výsledková sekce (#output) ---- */
 #output {
-  background: var(--lg-bg-neutral);
+  background: rgba(8, 20, 52, 0.62);
   backdrop-filter: var(--lg-blur);
   -webkit-backdrop-filter: var(--lg-blur);
-  border: var(--lg-border);
+  border: 1px solid rgba(255, 255, 255, 0.13);
   box-shadow:
-    0 24px 56px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    0 24px 56px rgba(0, 0, 0, 0.58),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
   position: relative;
   overflow: hidden;
 }
@@ -4783,4 +4794,146 @@ body.light-mode .action-stack {
 
 /* ============================================================
    Konec Liquid Glass patch
+   ============================================================ */
+
+
+/* ============================================================
+   NAVY READABILITY patch — RB TAXI v3.6.45-obsidian-glass
+   Opravuje čitelnost na navy blue pozadí:
+   - Nadpisy sekcí výraznější
+   - Label texty světlejší
+   - Pole s vyšším kontrastem pozadí
+   - Separátory výčetky čitelnější
+   ============================================================ */
+
+/* Nadpisy sekcí — zlatá a výraznější na navy */
+.section-heading,
+.shell-title,
+.detail-title,
+#output .detail-title {
+  color: var(--ob-gold-soft);
+  text-shadow: 0 1px 8px rgba(201, 168, 76, 0.20);
+  letter-spacing: 0.18em;
+}
+
+/* Popisky polí — světlejší pro čitelnost na modrém */
+.label-text {
+  color: rgba(220, 210, 190, 0.72);
+}
+
+/* Formulářová pole — navy tónem místo čistě tmavého */
+input,
+select {
+  background: rgba(4, 12, 36, 0.75);
+  border: 1px solid rgba(201, 168, 76, 0.20);
+  color: var(--ob-text);
+}
+
+input:hover,
+select:hover {
+  border-color: rgba(201, 168, 76, 0.35);
+  background: rgba(4, 12, 36, 0.85);
+}
+
+input:focus,
+select:focus {
+  background: rgba(4, 12, 36, 0.90);
+  border-color: var(--ob-gold);
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.16);
+}
+
+input::placeholder {
+  color: rgba(140, 125, 100, 0.65);
+}
+
+/* Read-only pole */
+.readonly-field {
+  background: rgba(4, 12, 36, 0.45);
+  border-color: rgba(255, 255, 255, 0.07);
+  color: rgba(200, 190, 170, 0.60);
+}
+
+/* Hint texty pod poli */
+.field-hint {
+  color: rgba(160, 148, 120, 0.70);
+}
+
+/* Výsledkové řádky — navy panel s lepším kontrastem */
+#output .row {
+  background: rgba(4, 12, 36, 0.55);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+#output .row .key {
+  color: rgba(200, 188, 165, 0.80);
+}
+
+#output .row .val {
+  color: var(--ob-text);
+}
+
+/* Summary karty ve výčetce */
+#output .summary-card {
+  background: rgba(4, 12, 36, 0.60);
+  border-color: rgba(255, 255, 255, 0.09);
+}
+
+#output .detail-card {
+  background: rgba(4, 12, 36, 0.55);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Live chips a KPI na navy */
+.live-chip,
+.kpi-card,
+.command-card,
+.ops-item {
+  background: rgba(6, 16, 44, 0.65);
+  border-color: rgba(255, 255, 255, 0.09);
+}
+
+.live-chip span,
+.kpi-card span,
+.ops-item span {
+  color: rgba(200, 188, 165, 0.72);
+}
+
+.live-chip strong,
+.kpi-card strong,
+.ops-item strong {
+  color: var(--ob-gold-soft);
+}
+
+/* Status meter na navy */
+.status-meter {
+  background: rgba(6, 16, 44, 0.58);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(200, 188, 165, 0.72);
+}
+
+/* App notices */
+.app-notice {
+  background: rgba(201, 168, 76, 0.10);
+  border-color: rgba(201, 168, 76, 0.26);
+}
+
+/* Modal na navy */
+.modal-content {
+  background: rgba(5, 12, 34, 0.82);
+}
+
+/* Action stack */
+.action-stack {
+  background: rgba(6, 16, 44, 0.60);
+  border-color: rgba(255, 255, 255, 0.09);
+}
+
+/* Install banner */
+.install-banner {
+  background: rgba(6, 16, 44, 0.65);
+  border-color: rgba(255, 255, 255, 0.10);
+}
+
+/* ============================================================
+   Konec Navy Readability patch
    ============================================================ */
