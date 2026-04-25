@@ -4078,862 +4078,738 @@ body.light-mode button.primary {
 
 
 /* ============================================================
-   LIQUID GLASS patch — RB TAXI v3.6.45-obsidian-glass
-   Aplikuje se SELEKTIVNĚ nad obsidian základ:
-     - Header              → glass tmavý (frosted)
-     - Glass shell (form)  → glass neutrální
-     - Výsledková karta    → glass zlatý
-     - Primary tlačítko   → glass zlatý s inset highlight
-     - Status bubliny      → glass tónovaný
-     - Modal               → glass tmavý
-   Formulářová pole, live chips, detail karty →
-     ZACHOVÁNY pevné obsidian povrchy (čitelnost v autě)
-   ============================================================
+   DARK CHAMPAGNE theme — RB TAXI v3.6.45-champagne
 
-   JAK LIQUID GLASS FUNGUJE V CSS
-   --------------------------------
-   Čtyři vrstvy dohromady tvoří efekt:
-   1. rgba pozadí s nízkým alpha (0.08–0.16) — průsvitnost
-   2. backdrop-filter: blur + saturate + brightness — živost
-   3. ::before 1px gradient — specular highlight (horní lem)
-   4. ::after radial-gradient — světelný reflex v rohu
+   FILOZOFIE
+   ----------
+   Žádný modrý ani fialový nádech kdekoliv v aplikaci.
+   Pozadí je teplá hnědočerná — jako tmavé dřevo, kůže,
+   nebo interior prémiového vozu. Zlato je šampaňské
+   (méně saturované, více krémové) — ne taxi-žluté.
+   Výsledek: hodinky, péro Montblanc, Patek Philippe.
 
-   POZADÍ STRÁNKY
-   ---------------
-   backdrop-filter potřebuje za sebou obsah k rozmazání.
-   Proto body dostane bohatý multi-layer gradient místo #050507.
-   Formulářové panely (.glass-shell, #output) jsou průhledné
-   a "vidí skrz" na wallpaper — tím vzniká hloubka.
+   PALETA
+   -------
+   Stránka bg:      #120e09   warm near-black
+   Surface 1:       #1a1510   elevated warm panel
+   Surface 2:       #211a12   field / grouped
+   Surface 3:       #281f15   focus surface
+   Border jemný:    rgba(232,208,138, 0.13)
+   Border silný:    rgba(232,208,138, 0.32)
+   Šampaňské:       #e8d08a   champagne gold
+   Gold primární:   #c9a84c   luster bronze-gold
+   Gold bright:     #f5e9c0   off-white cream
+   Text primární:   #f0e8d8   warm cream white
+   Text sekundární: #9a8a70   warm tan
+   Text muted:      #6a5c48   dark tan
+   Zelená:          #5ecb94   warm emerald
+   Červená:         #e06858   warm terracotta red
    ============================================================ */
 
 
-/* ---- 0. Nové CSS proměnné pro glass ---- */
+/* ---- 1. CSS proměnné ---- */
 :root {
-  --lg-blur:        blur(28px) saturate(180%) brightness(1.06);
-  --lg-blur-heavy:  blur(40px) saturate(200%) brightness(1.08);
-  --lg-blur-light:  blur(18px) saturate(160%) brightness(1.04);
+  --ch-bg:          #120e09;
+  --ch-surface:     #1a1510;
+  --ch-surface-2:   #211a12;
+  --ch-surface-3:   #281f15;
+  --ch-surface-4:   #2e2418;
 
-  /* Glass povrchy */
-  --lg-bg-neutral:  rgba(255, 255, 255, 0.072);
-  --lg-bg-dark:     rgba(6, 5, 10, 0.52);
-  --lg-bg-gold:     rgba(201, 168, 76, 0.11);
-  --lg-bg-green:    rgba(62, 207, 142, 0.10);
-  --lg-bg-red:      rgba(240, 96, 96, 0.10);
+  --ch-champ:       #e8d08a;
+  --ch-gold:        #c9a84c;
+  --ch-bright:      #f5e9c0;
+  --ch-cream:       #faf0dc;
 
-  /* Glass bordery */
-  --lg-border:      1px solid rgba(255, 255, 255, 0.16);
-  --lg-border-gold: 1px solid rgba(201, 168, 76, 0.38);
-  --lg-border-dim:  1px solid rgba(255, 255, 255, 0.09);
+  --ch-line:        rgba(232, 208, 138, 0.13);
+  --ch-line-s:      rgba(232, 208, 138, 0.30);
+  --ch-line-x:      rgba(232, 208, 138, 0.48);
+
+  --ch-text:        #f0e8d8;
+  --ch-muted:       #9a8a70;
+  --ch-muted-2:     #6a5c48;
+  --ch-muted-3:     #4a3e2e;
+
+  --ch-green:       #5ecb94;
+  --ch-red:         #e06858;
+  --ch-amber:       #d4a040;
+
+  --ch-shadow:      0 20px 52px rgba(0, 0, 0, 0.68);
+  --ch-shadow-sm:   0 8px 22px rgba(0, 0, 0, 0.50);
+  --ch-glow-gold:   0 0 28px rgba(232, 208, 138, 0.18);
+
+  /* Přepis globálních tokenů aplikace */
+  --text:           var(--ch-text);
+  --muted:          var(--ch-muted);
+  --line:           var(--ch-line);
+  --line-strong:    var(--ch-line-s);
+  --gold:           var(--ch-gold);
+  --gold-2:         var(--ch-champ);
+  --gold-3:         var(--ch-bright);
+  --success:        var(--ch-green);
+  --danger:         var(--ch-red);
+  --shadow-xl:      var(--ch-shadow);
+  --shadow-lg:      var(--ch-shadow-sm);
+
+  /* RB tokeny */
+  --rb-ink:         var(--ch-bg);
+  --rb-panel:       var(--ch-surface);
+  --rb-text:        var(--ch-text);
+  --rb-muted:       var(--ch-muted);
+  --rb-line:        var(--ch-line);
+  --rb-gold:        var(--ch-gold);
+  --rb-gold-soft:   var(--ch-champ);
+  --rb-gold-line:   var(--ch-line-s);
+  --rb-green:       var(--ch-green);
 }
 
 
-/* ---- 1. Pozadí stránky — wallpaper pod glass ---- */
-/*
-   Obsidian byl #050507 (čistá černá).
-   Glass potřebuje hloubku za panely — přidáme tří-barevný
-   radial wallpaper. Na OLED černé oblasti jsou stále černé,
-   barevné oblasti dávají backdrop-filteru co rozmazávat.
-*/
+/* ---- 2. Pozadí stránky ---- */
 html {
-  background: #050d1f;
+  background: var(--ch-bg);
 }
 
 body {
-  /*
-     Navy Blue wallpaper — základ #050d1f (hluboká noc)
-     Zlatý odlesk vlevo nahoře dává hloubku a spojuje se s gold akcenty.
-     Středový navy přechod drží čitelnost panelů.
-     Backdrop-filter má teď dostatek barevného obsahu k rozmazání.
-  */
   background:
-    radial-gradient(ellipse 650px 500px at -6% -8%,
-      rgba(201, 168, 76, 0.28) 0%,
-      rgba(201, 168, 76, 0.06) 42%,
+    radial-gradient(ellipse 680px 460px at -6% -8%,
+      rgba(232, 208, 138, 0.11) 0%,
+      rgba(180, 140, 60, 0.04) 42%,
       transparent 62%),
-    radial-gradient(ellipse 700px 600px at 110% 8%,
-      rgba(8, 24, 80, 0.90) 0%,
+    radial-gradient(ellipse 500px 400px at 105% 10%,
+      rgba(40, 28, 14, 0.80) 0%,
       transparent 55%),
-    radial-gradient(ellipse 900px 700px at 50% 110%,
-      rgba(4, 18, 60, 0.75) 0%,
+    radial-gradient(ellipse 600px 500px at 50% 108%,
+      rgba(28, 20, 10, 0.70) 0%,
       transparent 58%),
-    radial-gradient(ellipse 500px 400px at 100% 100%,
-      rgba(20, 50, 130, 0.45) 0%,
-      transparent 52%),
-    linear-gradient(155deg,
-      #081628 0%,
-      #050d1f 40%,
-      #071422 70%,
-      #040c1a 100%);
+    linear-gradient(150deg,
+      #1a1610 0%,
+      #120e09 35%,
+      #0e0b06 65%,
+      #130f0a 100%);
   background-attachment: fixed;
-  color: var(--ob-text);
+  color: var(--ch-text);
 }
 
-/* Zlatý light leak — výraznější na navy pozadí */
+/* Teplý světelný odlesk — žádný modrý tón */
 body::before {
   background:
-    radial-gradient(ellipse 700px 450px at -5% -8%,
-      rgba(201, 168, 76, 0.12),
+    radial-gradient(ellipse 580px 380px at -4% -6%,
+      rgba(232, 208, 138, 0.06),
       transparent 55%),
-    linear-gradient(125deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.022) 30%,
-      transparent 55%);
+    linear-gradient(130deg,
+      rgba(255, 240, 200, 0.012) 0%,
+      transparent 45%);
   opacity: 1;
 }
 
 
-/* ---- 2. Mixin — společné glass vlastnosti ---- */
-/*
-   Přidáme třídu .lg-surface jako základ.
-   Konkrétní elementy dostanou vlastní doladění.
-   Pseudoelementy ::before a ::after jsou klíčové —
-   nelze je dát do "mixinu", musí být na každém selektoru.
-*/
-
-
-/* ---- 3. Header — frosted dark glass ---- */
+/* ---- 3. Header ---- */
 .app-header {
-  background: var(--lg-bg-dark);
-  backdrop-filter: var(--lg-blur-heavy);
-  -webkit-backdrop-filter: var(--lg-blur-heavy);
-  border-bottom: var(--lg-border-dim);
+  background: rgba(20, 16, 10, 0.96);
+  border-bottom: 1px solid var(--ch-line);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.06),
-    0 8px 32px rgba(0, 0, 0, 0.45);
-  /* Zrušíme pevný obsidian box-shadow z minulého patche */
+    0 1px 0 rgba(232, 208, 138, 0.07),
+    0 8px 28px rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(24px) saturate(130%);
+  -webkit-backdrop-filter: blur(24px) saturate(130%);
 }
 
-/* Specular highlight — tenká světlá linka na spodní hraně headeru */
-.app-header::after {
-  content: "";
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(201, 168, 76, 0.28) 25%,
-    rgba(255, 255, 255, 0.18) 50%,
-    rgba(201, 168, 76, 0.28) 75%,
-    transparent 100%
-  );
-  pointer-events: none;
+.brand-icon,
+#output .report-mark {
+  border: 1.5px solid var(--ch-line-s);
+  background: rgba(232, 208, 138, 0.07);
+  box-shadow: 0 0 0 4px rgba(232, 208, 138, 0.05);
+}
+
+.brand-title,
+#output .title {
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  color: var(--ch-champ);
+  letter-spacing: 0.01em;
+}
+
+.eyebrow {
+  color: var(--ch-gold);
+  letter-spacing: 0.22em;
+}
+
+.app-version {
+  color: var(--ch-muted-2);
 }
 
 
-/* ---- 4. Glass shell (formulářová sekce) ---- */
-.glass-shell {
-  background: rgba(8, 20, 52, 0.62);
-  backdrop-filter: var(--lg-blur);
-  -webkit-backdrop-filter: var(--lg-blur);
-  border: 1px solid rgba(255, 255, 255, 0.13);
+/* ---- 4. Status badges ---- */
+.header-status {
+  background: rgba(232, 208, 138, 0.08);
+  border-color: var(--ch-line-s);
+  color: var(--ch-champ);
+}
+
+.header-status .status-dot {
+  background: var(--ch-gold);
+  box-shadow: 0 0 0 5px rgba(232, 208, 138, 0.12);
+}
+
+.header-status.is-good {
+  background: rgba(94, 203, 148, 0.09);
+  border-color: rgba(94, 203, 148, 0.28);
+  color: #b0f0d0;
+}
+
+.header-status.is-good .status-dot {
+  background: var(--ch-green);
+  box-shadow: 0 0 0 5px rgba(94, 203, 148, 0.14);
+}
+
+.header-status.is-bad {
+  background: rgba(224, 104, 88, 0.09);
+  border-color: rgba(224, 104, 88, 0.28);
+  color: #ffd8d0;
+}
+
+.header-status.is-bad .status-dot {
+  background: var(--ch-red);
+  box-shadow: 0 0 0 5px rgba(224, 104, 88, 0.14);
+}
+
+.network-status.is-online {
+  color: var(--ch-green);
+  border-color: rgba(94, 203, 148, 0.26);
+  background: rgba(94, 203, 148, 0.08);
+}
+
+.network-status.is-offline {
+  color: var(--ch-red);
+  border-color: rgba(224, 104, 88, 0.26);
+  background: rgba(224, 104, 88, 0.08);
+}
+
+
+/* ---- 5. Panely a karty ---- */
+.glass-shell,
+#output,
+.install-banner {
+  background: var(--ch-surface);
+  border: 1px solid var(--ch-line);
   box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  position: relative;
-  overflow: hidden;
+    var(--ch-shadow),
+    inset 0 1px 0 rgba(232, 208, 138, 0.06);
 }
 
-/* Specular highlight — horní lem */
-.glass-shell::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.45) 30%,
-    rgba(255, 255, 255, 0.65) 50%,
-    rgba(255, 255, 255, 0.45) 70%,
-    transparent 100%
-  );
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Světelný reflex — levý horní roh */
-.glass-shell::after {
-  content: "";
-  position: absolute;
-  top: -40px; left: -30px;
-  width: 180px; height: 130px;
-  background: radial-gradient(ellipse,
-    rgba(255, 255, 255, 0.07),
-    transparent 68%
-  );
-  pointer-events: none;
-  z-index: 0;
-}
-
-
-/* ---- 5. Výsledková sekce (#output) ---- */
-#output {
-  background: rgba(8, 20, 52, 0.62);
-  backdrop-filter: var(--lg-blur);
-  -webkit-backdrop-filter: var(--lg-blur);
-  border: 1px solid rgba(255, 255, 255, 0.13);
+.modal-content {
+  background: var(--ch-surface);
+  border: 1px solid var(--ch-line-s);
   box-shadow:
-    0 24px 56px rgba(0, 0, 0, 0.58),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  position: relative;
-  overflow: hidden;
+    0 32px 80px rgba(0, 0, 0, 0.75),
+    inset 0 1px 0 rgba(232, 208, 138, 0.08);
 }
 
-#output::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.40) 25%,
-    rgba(201, 168, 76, 0.55) 50%,
-    rgba(255, 255, 255, 0.40) 75%,
-    transparent 100%
-  );
-  pointer-events: none;
-  z-index: 1;
+.modal-overlay {
+  background: rgba(8, 6, 3, 0.80);
+  backdrop-filter: blur(14px) saturate(110%);
+  -webkit-backdrop-filter: blur(14px) saturate(110%);
 }
 
-#output::after {
-  content: "";
-  position: absolute;
-  top: -50px; left: -40px;
-  width: 200px; height: 150px;
-  background: radial-gradient(ellipse,
-    rgba(201, 168, 76, 0.06),
-    transparent 65%
-  );
-  pointer-events: none;
-  z-index: 0;
+.modal-badge {
+  background: rgba(232, 208, 138, 0.08);
+  border: 1px solid var(--ch-line);
+  color: var(--ch-champ);
+}
+
+.action-stack {
+  background: var(--ch-surface);
+  border: 1px solid var(--ch-line);
+  box-shadow: var(--ch-shadow-sm);
+}
+
+.install-banner {
+  background: var(--ch-surface);
 }
 
 
-/* ---- 6. Hlavní karta výsledku — zlaté sklo ---- */
-#output .report-total-card {
-  background: var(--lg-bg-gold);
-  backdrop-filter: var(--lg-blur);
-  -webkit-backdrop-filter: var(--lg-blur);
-  border: var(--lg-border-gold);
-  box-shadow:
-    0 8px 28px rgba(0, 0, 0, 0.40),
-    inset 0 1px 0 rgba(245, 233, 192, 0.22),
-    inset 0 -1px 0 rgba(201, 168, 76, 0.10);
-  position: relative;
-  overflow: hidden;
+/* ---- 6. Sekce nadpisy ---- */
+.section-heading,
+.shell-title,
+.detail-title,
+#output .detail-title,
+#output .report-total-label,
+.action-copy strong {
+  color: var(--ch-gold);
+  letter-spacing: 0.18em;
 }
 
-/* Zlatý specular highlight na výsledkové kartě */
-#output .report-total-card::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(245, 233, 192, 0.55) 20%,
-    rgba(255, 255, 255, 0.85) 50%,
-    rgba(245, 233, 192, 0.55) 80%,
-    transparent 100%
-  );
-  pointer-events: none;
-}
-
-/* Zlatý reflex v rohu */
-#output .report-total-card::after {
-  content: "";
-  position: absolute;
-  top: -20px; right: -10px;
-  width: 120px; height: 80px;
-  background: radial-gradient(ellipse,
-    rgba(201, 168, 76, 0.14),
-    transparent 65%
-  );
-  pointer-events: none;
-}
-
-#output .report-total-card.is-bad {
-  background: rgba(240, 96, 96, 0.11);
-  border: 1px solid rgba(240, 96, 96, 0.38);
-}
-
-#output .report-total-card.is-bad::before {
-  background: linear-gradient(90deg,
-    transparent,
-    rgba(255, 200, 200, 0.45) 30%,
-    rgba(255, 220, 220, 0.70) 50%,
-    rgba(255, 200, 200, 0.45) 70%,
-    transparent
-  );
-}
-
-/* Velká hodnota K odevzdání — zlatý glow na OLED */
-#output .report-total-value {
-  text-shadow:
-    0 0 24px rgba(201, 168, 76, 0.35),
-    0 0 48px rgba(201, 168, 76, 0.15);
+.section-heading {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--ch-line);
+  margin-bottom: 16px;
 }
 
 
-/* ---- 7. Primary tlačítko — glass zlatý ---- */
+/* ---- 7. Formulářová pole ---- */
+input,
+select {
+  background: var(--ch-surface-2);
+  border: 1px solid rgba(232, 208, 138, 0.15);
+  color: var(--ch-text);
+  font-variant-numeric: tabular-nums;
+}
+
+input::placeholder {
+  color: var(--ch-muted-2);
+}
+
+input:hover,
+select:hover {
+  border-color: rgba(232, 208, 138, 0.26);
+}
+
+input:focus,
+select:focus {
+  border-color: var(--ch-gold);
+  box-shadow: 0 0 0 3px rgba(232, 208, 138, 0.12);
+  background: var(--ch-surface-3);
+  outline: none;
+}
+
+.readonly-field {
+  background: var(--ch-surface);
+  border-color: rgba(232, 208, 138, 0.07);
+  color: var(--ch-muted);
+}
+
+.input-error {
+  border-color: var(--ch-red) !important;
+  box-shadow: 0 0 0 3px rgba(224, 104, 88, 0.13) !important;
+  background: rgba(224, 104, 88, 0.06) !important;
+}
+
+.label-text {
+  color: var(--ch-muted);
+}
+
+.field-hint {
+  color: var(--ch-muted-2);
+}
+
+
+/* ---- 8. Tlačítka ---- */
 button.primary {
   background: linear-gradient(
     155deg,
-    rgba(245, 233, 192, 0.92) 0%,
-    rgba(201, 168, 76, 0.88) 100%
+    var(--ch-bright) 0%,
+    var(--ch-champ)  55%,
+    var(--ch-gold)   100%
   );
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
-  border: 1px solid rgba(245, 233, 192, 0.40);
+  border: 1px solid rgba(245, 233, 192, 0.32);
+  color: #0c0800;
+  font-weight: 800;
+  letter-spacing: 0.04em;
   box-shadow:
-    0 8px 24px rgba(201, 168, 76, 0.30),
-    inset 0 1px 0 rgba(255, 255, 255, 0.55),
-    inset 0 -1px 0 rgba(160, 120, 48, 0.35);
-  color: #060400;
-  position: relative;
-  overflow: hidden;
+    0 8px 24px rgba(201, 168, 76, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
-/* Glass specular na tlačítku */
-button.primary::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent,
-    rgba(255, 255, 255, 0.80) 40%,
-    rgba(255, 255, 255, 0.95) 50%,
-    rgba(255, 255, 255, 0.80) 60%,
-    transparent
-  );
-  pointer-events: none;
-  z-index: 2;
-}
-
-/* Sheen animace zůstane na ::after */
 button.primary::after {
-  background: linear-gradient(90deg,
+  background: linear-gradient(
+    90deg,
     transparent,
-    rgba(255, 255, 255, 0.50),
+    rgba(255, 255, 255, 0.42),
     transparent
   );
 }
 
 button.primary:hover {
   box-shadow:
-    0 12px 32px rgba(201, 168, 76, 0.40),
-    inset 0 1px 0 rgba(255, 255, 255, 0.60),
-    inset 0 -1px 0 rgba(160, 120, 48, 0.40);
+    0 12px 32px rgba(201, 168, 76, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 
-
-/* ---- 8. Secondary tlačítka — neutrální glass ---- */
 button.secondary,
 .icon-button {
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
-  border: var(--lg-border-dim);
-  color: var(--ob-text);
-  position: relative;
-  overflow: hidden;
-}
-
-button.secondary::before,
-.icon-button::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent,
-    rgba(255, 255, 255, 0.30) 50%,
-    transparent
-  );
-  pointer-events: none;
+  background: var(--ch-surface-2);
+  border: 1px solid var(--ch-line);
+  color: var(--ch-text);
 }
 
 button.secondary:hover,
 .icon-button:hover {
-  background: rgba(255, 255, 255, 0.10);
-  border-color: rgba(201, 168, 76, 0.28);
+  border-color: rgba(232, 208, 138, 0.30);
+  background: var(--ch-surface-3);
+}
+
+.danger-button {
+  border-color: rgba(224, 104, 88, 0.32) !important;
+  color: #ffd8d0 !important;
 }
 
 
-/* ---- 9. Status a notice bubliny — tónované glass ---- */
-.header-status {
-  background: rgba(201, 168, 76, 0.09);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
-  border: 1px solid rgba(201, 168, 76, 0.24);
-}
-
-.header-status.is-good {
-  background: rgba(62, 207, 142, 0.09);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
-  border-color: rgba(62, 207, 142, 0.26);
-}
-
-.header-status.is-bad {
-  background: rgba(240, 96, 96, 0.09);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
-  border-color: rgba(240, 96, 96, 0.26);
-}
-
-.network-status {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
-}
-
+/* ---- 9. Oznámení ---- */
 .app-notice {
-  background: rgba(201, 168, 76, 0.08);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
-  border-color: rgba(201, 168, 76, 0.22);
+  background: rgba(232, 208, 138, 0.07);
+  border-color: var(--ch-line);
+  color: var(--ch-champ);
 }
 
 .app-notice.is-good {
-  background: rgba(62, 207, 142, 0.08);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
+  background: rgba(94, 203, 148, 0.07);
+  border-color: rgba(94, 203, 148, 0.24);
+  color: #b0f0d0;
 }
 
 .app-notice.is-bad {
-  background: rgba(240, 96, 96, 0.08);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
+  background: rgba(224, 104, 88, 0.07);
+  border-color: rgba(224, 104, 88, 0.24);
+  color: #ffd8d0;
 }
 
 .status-meter {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
-  border-color: rgba(255, 255, 255, 0.09);
+  background: var(--ch-surface);
+  border-color: var(--ch-line);
+  color: var(--ch-muted);
 }
 
 .status-meter.is-good {
-  background: rgba(62, 207, 142, 0.08);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
+  background: rgba(94, 203, 148, 0.07);
+  border-color: rgba(94, 203, 148, 0.24);
+  color: #b0f0d0;
 }
 
 .status-meter.is-bad {
-  background: rgba(240, 96, 96, 0.08);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
+  background: rgba(224, 104, 88, 0.07);
+  border-color: rgba(224, 104, 88, 0.24);
+  color: #ffd8d0;
 }
 
 
-/* ---- 10. Modal — nejsilnější dark glass ---- */
-.modal-overlay {
-  background: rgba(2, 2, 6, 0.75);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-}
-
-.modal-content {
-  background: rgba(10, 9, 16, 0.72);
-  backdrop-filter: var(--lg-blur-heavy);
-  -webkit-backdrop-filter: var(--lg-blur-heavy);
-  border: var(--lg-border);
-  box-shadow:
-    0 32px 80px rgba(0, 0, 0, 0.80),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 0 0 1px rgba(201, 168, 76, 0.06);
-  position: relative;
-  overflow: hidden;
-}
-
-.modal-content::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent,
-    rgba(255, 255, 255, 0.35) 30%,
-    rgba(201, 168, 76, 0.50) 50%,
-    rgba(255, 255, 255, 0.35) 70%,
-    transparent
-  );
-  pointer-events: none;
-}
-
-
-/* ---- 11. Action stack (po výpočtu) ---- */
-.action-stack {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
-  border: var(--lg-border-dim);
-  box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.38),
-    inset 0 1px 0 rgba(255, 255, 255, 0.07);
-}
-
-
-/* ---- 12. Live chips a KPI karty — lehký glass ---- */
-.live-chip,
-.kpi-card {
-  background: rgba(255, 255, 255, 0.055);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
-  border: var(--lg-border-dim);
-}
-
-.command-card {
-  background: rgba(255, 255, 255, 0.055);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
-  border: var(--lg-border-dim);
-}
-
-.command-card.status-good {
-  background: rgba(62, 207, 142, 0.08);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
-  border-color: rgba(62, 207, 142, 0.20);
-}
-
-.command-card.status-bad {
-  background: rgba(240, 96, 96, 0.08);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
-  border-color: rgba(240, 96, 96, 0.20);
-}
-
-.accent-command {
-  background: rgba(201, 168, 76, 0.07);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
-  border-color: rgba(201, 168, 76, 0.26);
-}
-
-.ops-item {
-  background: rgba(255, 255, 255, 0.045);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
-  border: var(--lg-border-dim);
-}
-
-
-/* ---- 13. Output řádky — lehký glass (detail karty pevné) ---- */
-/*
-   Detail karty (.detail-card, .summary-card) zůstávají
-   pevné obsidian povrchy — čitelnost financí v autě.
-   Jednotlivé .row řádky dostanou jen minimální glass.
-*/
-#output .row {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.06);
-}
-
-#output .row.accent-grand {
-  background: rgba(201, 168, 76, 0.10);
-  backdrop-filter: var(--lg-blur-light);
-  -webkit-backdrop-filter: var(--lg-blur-light);
-  border-color: rgba(201, 168, 76, 0.32);
-  position: relative;
-  overflow: hidden;
-}
-
-#output .row.accent-grand::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent,
-    rgba(245, 233, 192, 0.45) 50%,
-    transparent
-  );
-  pointer-events: none;
-}
-
-
-/* ---- 14. PWA install banner ---- */
-.install-banner {
-  background: rgba(255, 255, 255, 0.065);
-  backdrop-filter: var(--lg-blur);
-  -webkit-backdrop-filter: var(--lg-blur);
-  border: var(--lg-border);
-  box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.38),
-    inset 0 1px 0 rgba(255, 255, 255, 0.10);
-  position: relative;
-  overflow: hidden;
-}
-
-.install-banner::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent,
-    rgba(255, 255, 255, 0.35) 50%,
-    transparent
-  );
-  pointer-events: none;
-}
-
-
-/* ---- 15. Redukovaný pohyb — vypni blur pro přístupnost ---- */
-@media (prefers-reduced-motion: reduce) {
-  .glass-shell,
-  #output,
-  .app-header,
-  button.primary,
-  button.secondary,
-  .icon-button,
-  .modal-content,
-  .app-notice,
-  .status-meter,
-  .header-status,
-  .live-chip,
-  .kpi-card,
-  .command-card,
-  .ops-item,
-  .action-stack,
-  .install-banner,
-  #output .report-total-card,
-  #output .row.accent-grand {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
-}
-
-
-/* ---- 16. Světlý mód — glass na světlém wallpaperu ---- */
-body.light-mode {
-  background:
-    radial-gradient(ellipse 700px 500px at -8% -10%,
-      rgba(201, 168, 76, 0.22) 0%,
-      transparent 55%),
-    radial-gradient(ellipse 600px 480px at 108% 5%,
-      rgba(14, 40, 140, 0.15) 0%,
-      transparent 52%),
-    radial-gradient(ellipse 500px 400px at 55% 110%,
-      rgba(100, 30, 140, 0.10) 0%,
-      transparent 55%),
-    linear-gradient(160deg, #f0ede6 0%, #ebe5d8 50%, #f2eeea 100%);
-  background-attachment: fixed;
-}
-
-body.light-mode::before {
-  background:
-    radial-gradient(ellipse 600px 350px at -5% -8%,
-      rgba(201, 168, 76, 0.12),
-      transparent 58%),
-    linear-gradient(115deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.25) 35%,
-      transparent 60%);
-}
-
-body.light-mode .glass-shell,
-body.light-mode #output,
-body.light-mode .install-banner {
-  background: rgba(255, 255, 255, 0.48);
-  border-color: rgba(255, 255, 255, 0.65);
-  box-shadow:
-    0 20px 48px rgba(160, 120, 48, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.85);
-}
-
-body.light-mode .app-header {
-  background: rgba(248, 244, 236, 0.72);
-  border-bottom-color: rgba(201, 168, 76, 0.20);
-}
-
-body.light-mode #output .report-total-card {
-  background: rgba(201, 168, 76, 0.12);
-  border-color: rgba(160, 120, 48, 0.35);
-}
-
-body.light-mode button.primary {
-  background: linear-gradient(155deg,
-    rgba(220, 190, 80, 0.96),
-    rgba(170, 130, 40, 0.92)
-  );
-}
-
-body.light-mode button.secondary,
-body.light-mode .icon-button {
-  background: rgba(255, 255, 255, 0.55);
-  border-color: rgba(0, 0, 0, 0.10);
-  color: var(--ob-text);
-}
-
-body.light-mode .modal-content {
-  background: rgba(250, 247, 240, 0.78);
-  border-color: rgba(255, 255, 255, 0.70);
-}
-
-body.light-mode .header-status {
-  background: rgba(201, 168, 76, 0.10);
-  border-color: rgba(160, 120, 48, 0.25);
-}
-
-body.light-mode .live-chip,
-body.light-mode .kpi-card,
-body.light-mode .command-card,
-body.light-mode .ops-item {
-  background: rgba(255, 255, 255, 0.50);
-  border-color: rgba(0, 0, 0, 0.08);
-}
-
-body.light-mode .action-stack {
-  background: rgba(255, 255, 255, 0.45);
-  border-color: rgba(0, 0, 0, 0.07);
-}
-
-
-/* ============================================================
-   Konec Liquid Glass patch
-   ============================================================ */
-
-
-/* ============================================================
-   NAVY READABILITY patch — RB TAXI v3.6.45-obsidian-glass
-   Opravuje čitelnost na navy blue pozadí:
-   - Nadpisy sekcí výraznější
-   - Label texty světlejší
-   - Pole s vyšším kontrastem pozadí
-   - Separátory výčetky čitelnější
-   ============================================================ */
-
-/* Nadpisy sekcí — zlatá a výraznější na navy */
-.section-heading,
-.shell-title,
-.detail-title,
-#output .detail-title {
-  color: var(--ob-gold-soft);
-  text-shadow: 0 1px 8px rgba(201, 168, 76, 0.20);
-  letter-spacing: 0.18em;
-}
-
-/* Popisky polí — světlejší pro čitelnost na modrém */
-.label-text {
-  color: rgba(220, 210, 190, 0.72);
-}
-
-/* Formulářová pole — navy tónem místo čistě tmavého */
-input,
-select {
-  background: rgba(4, 12, 36, 0.75);
-  border: 1px solid rgba(201, 168, 76, 0.20);
-  color: var(--ob-text);
-}
-
-input:hover,
-select:hover {
-  border-color: rgba(201, 168, 76, 0.35);
-  background: rgba(4, 12, 36, 0.85);
-}
-
-input:focus,
-select:focus {
-  background: rgba(4, 12, 36, 0.90);
-  border-color: var(--ob-gold);
-  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.16);
-}
-
-input::placeholder {
-  color: rgba(140, 125, 100, 0.65);
-}
-
-/* Read-only pole */
-.readonly-field {
-  background: rgba(4, 12, 36, 0.45);
-  border-color: rgba(255, 255, 255, 0.07);
-  color: rgba(200, 190, 170, 0.60);
-}
-
-/* Hint texty pod poli */
-.field-hint {
-  color: rgba(160, 148, 120, 0.70);
-}
-
-/* Výsledkové řádky — navy panel s lepším kontrastem */
-#output .row {
-  background: rgba(4, 12, 36, 0.55);
-  border-color: rgba(255, 255, 255, 0.07);
-}
-
-#output .row .key {
-  color: rgba(200, 188, 165, 0.80);
-}
-
-#output .row .val {
-  color: var(--ob-text);
-}
-
-/* Summary karty ve výčetce */
-#output .summary-card {
-  background: rgba(4, 12, 36, 0.60);
-  border-color: rgba(255, 255, 255, 0.09);
-}
-
-#output .detail-card {
-  background: rgba(4, 12, 36, 0.55);
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-/* Live chips a KPI na navy */
+/* ---- 10. Live chips, KPI, command ---- */
 .live-chip,
 .kpi-card,
-.command-card,
-.ops-item {
-  background: rgba(6, 16, 44, 0.65);
-  border-color: rgba(255, 255, 255, 0.09);
+.ops-item,
+.command-card {
+  background: var(--ch-surface);
+  border-color: var(--ch-line);
 }
 
 .live-chip span,
 .kpi-card span,
-.ops-item span {
-  color: rgba(200, 188, 165, 0.72);
+.ops-item span,
+.command-card span {
+  color: var(--ch-muted);
+  letter-spacing: 0.08em;
 }
 
 .live-chip strong,
 .kpi-card strong,
-.ops-item strong {
-  color: var(--ob-gold-soft);
+.ops-item strong,
+.command-card.command-status strong {
+  color: var(--ch-champ);
 }
 
-/* Status meter na navy */
-.status-meter {
-  background: rgba(6, 16, 44, 0.58);
-  border-color: rgba(255, 255, 255, 0.08);
-  color: rgba(200, 188, 165, 0.72);
+.command-card::after {
+  background: radial-gradient(
+    circle,
+    rgba(232, 208, 138, 0.09),
+    transparent 65%
+  );
 }
 
-/* App notices */
-.app-notice {
-  background: rgba(201, 168, 76, 0.10);
-  border-color: rgba(201, 168, 76, 0.26);
+.command-card.status-good {
+  background: rgba(94, 203, 148, 0.07);
+  border-color: rgba(94, 203, 148, 0.22);
 }
 
-/* Modal na navy */
-.modal-content {
-  background: rgba(5, 12, 34, 0.82);
+.command-card.status-bad {
+  background: rgba(224, 104, 88, 0.07);
+  border-color: rgba(224, 104, 88, 0.22);
 }
 
-/* Action stack */
-.action-stack {
-  background: rgba(6, 16, 44, 0.60);
-  border-color: rgba(255, 255, 255, 0.09);
+.accent-command,
+.ops-item-status {
+  background: rgba(232, 208, 138, 0.07);
+  border-color: var(--ch-line-s);
 }
 
-/* Install banner */
-.install-banner {
-  background: rgba(6, 16, 44, 0.65);
-  border-color: rgba(255, 255, 255, 0.10);
+.soft-gold strong,
+.accent-command strong {
+  color: var(--ch-champ);
 }
+
+.bottom-dashboard {
+  background: var(--ch-surface);
+  border-color: var(--ch-line);
+}
+
+
+/* ---- 11. Výsledková výčetka ---- */
+#output {
+  background: var(--ch-surface);
+  border: 1px solid var(--ch-line-s);
+  box-shadow:
+    var(--ch-shadow),
+    inset 0 1px 0 rgba(232, 208, 138, 0.07);
+}
+
+/* Hlavní karta K odevzdání */
+#output .report-total-card {
+  background: linear-gradient(
+    140deg,
+    rgba(232, 208, 138, 0.12) 0%,
+    rgba(26, 21, 16, 0.96) 100%
+  );
+  border: 1px solid var(--ch-line-s);
+  box-shadow: inset 0 1px 0 rgba(245, 233, 192, 0.10);
+}
+
+#output .report-total-card.is-bad {
+  background: linear-gradient(
+    140deg,
+    rgba(224, 104, 88, 0.13) 0%,
+    rgba(26, 21, 16, 0.96) 100%
+  );
+  border-color: rgba(224, 104, 88, 0.36);
+}
+
+#output .report-total-label {
+  color: var(--ch-gold);
+  letter-spacing: 0.18em;
+}
+
+#output .report-total-value {
+  color: var(--ch-bright);
+  text-shadow:
+    0 0 26px rgba(232, 208, 138, 0.24),
+    0 0 52px rgba(201, 168, 76, 0.10);
+  font-variant-numeric: tabular-nums;
+}
+
+#output .report-total-note {
+  color: var(--ch-muted);
+}
+
+/* Summary karty */
+#output .summary-card {
+  background: var(--ch-surface-2);
+  border-color: var(--ch-line);
+}
+
+#output .summary-card .small {
+  color: var(--ch-muted);
+  letter-spacing: 0.08em;
+}
+
+#output .summary-card .big {
+  color: var(--ch-text);
+  font-variant-numeric: tabular-nums;
+}
+
+#output .summary-card.pay  .big { color: var(--ch-green);  }
+#output .summary-card.cash .big { color: var(--ch-champ);  }
+#output .summary-card.delta .big { color: var(--ch-muted); }
+#output .summary-card.doplatek .big { color: var(--ch-red); }
+
+/* Detail karty */
+#output .detail-card {
+  background: var(--ch-surface-2);
+  border-color: var(--ch-line);
+}
+
+#output .detail-title {
+  color: var(--ch-gold);
+  letter-spacing: 0.16em;
+  border-bottom: 1px solid var(--ch-line);
+  padding-bottom: 8px;
+}
+
+/* Řádky výčetky */
+#output .row {
+  background: var(--ch-surface);
+  border: 1px solid rgba(232, 208, 138, 0.07);
+}
+
+#output .row .key {
+  color: var(--ch-muted);
+  font-weight: 600;
+}
+
+#output .row .val {
+  color: var(--ch-text);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+#output .row.accent-odev {
+  background: rgba(212, 160, 64, 0.08);
+  border-color: rgba(212, 160, 64, 0.20);
+}
+
+#output .row.accent-pay {
+  background: rgba(94, 203, 148, 0.07);
+  border-color: rgba(94, 203, 148, 0.20);
+}
+
+#output .row.accent-doplatek {
+  background: rgba(224, 104, 88, 0.07);
+  border-color: rgba(224, 104, 88, 0.20);
+}
+
+/* Finální řádek — šampaňský gradient */
+#output .row.accent-grand {
+  background: linear-gradient(
+    135deg,
+    rgba(232, 208, 138, 0.13) 0%,
+    rgba(26, 21, 16, 0.98) 100%
+  );
+  border-color: var(--ch-line-s);
+  margin-top: 14px;
+}
+
+#output .row.accent-grand .key,
+#output .row.accent-grand .val {
+  color: var(--ch-bright);
+  font-weight: 800;
+}
+
+/* Hlavička výčetky */
+#output .report-head {
+  border-bottom-color: var(--ch-line);
+}
+
+#output .report-badge {
+  background: rgba(232, 208, 138, 0.09);
+  border-color: var(--ch-line-s);
+  color: var(--ch-champ);
+}
+
+#output .report-status.good {
+  background: rgba(94, 203, 148, 0.08);
+  border-color: rgba(94, 203, 148, 0.28);
+  color: #b0f0d0;
+}
+
+#output .report-status.bad {
+  background: rgba(224, 104, 88, 0.08);
+  border-color: rgba(224, 104, 88, 0.28);
+  color: #ffd8d0;
+}
+
+#output .subtitle {
+  color: var(--ch-muted);
+}
+
+
+/* ---- 12. Export — sdílení (tmavý champagne skin) ---- */
+.export-share-mode {
+  background: #100d08 !important;
+  border: 1px solid rgba(232, 208, 138, 0.28) !important;
+  border-radius: 24px;
+}
+
+.export-share-mode .share-card     { background: #100d08; color: var(--ch-text) !important; }
+.export-share-mode .share-title    { color: var(--ch-champ) !important; }
+.export-share-mode .share-subtitle { color: var(--ch-muted) !important; }
+
+.export-share-mode .share-total {
+  background: linear-gradient(140deg,
+    rgba(232, 208, 138, 0.12),
+    rgba(10, 8, 4, 0.98)
+  ) !important;
+  border-color: var(--ch-line-s) !important;
+}
+
+.export-share-mode .share-total-label { color: var(--ch-gold)   !important; }
+.export-share-mode .share-total-value { color: var(--ch-bright) !important; }
+.export-share-mode .share-total-note  { color: var(--ch-muted)  !important; }
+
+.export-share-mode .share-kpi {
+  background: rgba(232, 208, 138, 0.05) !important;
+  border-color: var(--ch-line) !important;
+}
+
+.export-share-mode .share-kpi span        { color: var(--ch-muted) !important; }
+.export-share-mode .share-kpi strong      { color: var(--ch-text)  !important; }
+.export-share-mode .share-kpi.pay strong  { color: var(--ch-green) !important; }
+
+.export-share-mode .share-meta-item {
+  border-bottom-color: var(--ch-line) !important;
+}
+
+.export-share-mode .share-meta-item span   { color: var(--ch-muted) !important; }
+.export-share-mode .share-meta-item strong { color: var(--ch-text)  !important; }
+
+.export-share-mode .share-mark {
+  border-color: var(--ch-line-s) !important;
+  background: rgba(232, 208, 138, 0.06) !important;
+}
+
+.export-share-mode .share-status.good {
+  background: rgba(94, 203, 148, 0.10) !important;
+  border-color: rgba(94, 203, 148, 0.28) !important;
+  color: #b0f0d0 !important;
+}
+
+.export-share-mode .share-status.bad {
+  background: rgba(224, 104, 88, 0.10) !important;
+  border-color: rgba(224, 104, 88, 0.28) !important;
+  color: #ffd8d0 !important;
+}
+
+.export-share-mode .share-note { color: var(--ch-muted) !important; }
+
+
+/* ---- 13. Scrollbar ---- */
+::-webkit-scrollbar       { width: 4px; }
+::-webkit-scrollbar-track { background: var(--ch-bg); }
+::-webkit-scrollbar-thumb {
+  background: rgba(232, 208, 138, 0.18);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(232, 208, 138, 0.32);
+}
+
+
+/* ---- 14. Světlý mód — teplý krémový den ---- */
+body.light-mode {
+  --ch-bg:        #f5f0e8;
+  --ch-surface:   #ffffff;
+  --ch-surface-2: #faf6ee;
+  --ch-surface-3: #f2ece0;
+  --ch-surface-4: #ede5d4;
+  --ch-gold:      #9a7228;
+  --ch-champ:     #7a5818;
+  --ch-bright:    #4a3408;
+  --ch-line:      rgba(154, 114, 40, 0.18);
+  --ch-line-s:    rgba(154, 114, 40, 0.34);
+  --ch-text:      #1c1608;
+  --ch-muted:     #6a5830;
+  --ch-muted-2:   #9a8860;
+  --ch-shadow:    0 12px 32px rgba(100, 70, 20, 0.12);
+  --ch-shadow-sm: 0 6px 16px rgba(100, 70, 20, 0.08);
+  background: linear-gradient(165deg,#f8f3e8,#f0e8d5,#f5f0e5);
+}
+
+body.light-mode .app-header {
+  background: rgba(250, 246, 238, 0.96);
+  border-bottom-color: var(--ch-line);
+}
+
+body.light-mode #output .report-total-card {
+  background: linear-gradient(140deg, #1e1608, #2a1e0e);
+}
+
+body.light-mode #output .report-total-value,
+body.light-mode #output .report-total-label,
+body.light-mode #output .report-total-note {
+  color: #f5e9c0;
+}
+
+body.light-mode button.primary {
+  background: linear-gradient(155deg, #e8c84a, #a07830);
+  color: #0a0600;
+}
+
 
 /* ============================================================
-   Konec Navy Readability patch
+   Konec Dark Champagne patch
    ============================================================ */

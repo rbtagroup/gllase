@@ -9,7 +9,7 @@
   - Datum a jméno řidiče v názvech exportovaných souborů
 */
 document.addEventListener("DOMContentLoaded", () => {
-  const VERSION = "3.6.45-obsidian-glass";
+  const VERSION = "3.6.45-champagne";
   const CACHE_PREFIX = "rb-taxi-vycetka-";
   const CONFIG_KEYS = {
     commRate: "rb_commRate",
