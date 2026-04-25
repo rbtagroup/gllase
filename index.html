@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="theme-color" content="#05070d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>RB TAXI – Výčetka</title>
+  <link rel="manifest" href="manifest.json?v=3.6.45" />
+  <link rel="stylesheet" href="style.css?v=3.6.45" />
+  <link rel="icon" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <script defer src="vendor/html2canvas.min.js?v=3.6.45"></script>
+  <script defer src="vendor/jspdf.umd.min.js?v=3.6.45"></script>
+  <script defer src="calc.js?v=3.6.45"></script>
+  <script defer src="app.js?v=3.6.45"></script>
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" class="sprite-sheet" aria-hidden="true">
+    <symbol id="icon-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 0 0-16 0" /><circle cx="12" cy="7" r="4" /></symbol>
+    <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v6l4 2"/></symbol>
+    <symbol id="icon-road" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l6-16 4 16 6-16" /><path d="M12 4v4m0 4v4m0 4v0"/></symbol>
+    <symbol id="icon-cash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="icon-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4h8l1 3h7v9h-9l-1-3H4z"/></symbol>
+    <symbol id="icon-fuel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="10" height="14" rx="2"/><path d="M10 9h3"/><path d="M13 8l4-2v8a3 3 0 1 0 6 0V9l-2-2-2 1" transform="translate(-4 0)"/></symbol>
+    <symbol id="icon-wash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-1.5 2-5 6-5 9a5 5 0 0 0 10 0c0-3-3.5-7-5-9z"/></symbol>
+    <symbol id="icon-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol>
+    <symbol id="icon-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></symbol>
+    <symbol id="icon-car" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></symbol>
+    <symbol id="icon-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1 .6 1.65 1.65 0 0 0-.33 1V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-.33-1 1.65 1.65 0 0 0-1-.6 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-.6-1 1.65 1.65 0 0 0-1-.33H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1-.33 1.65 1.65 0 0 0 .6-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-.6 1.65 1.65 0 0 0 .33-1V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 .33 1 1.65 1.65 0 0 0 1 .6 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.27.3.49.65.6 1 .1.34.1.69 0 1-.11.35-.33.7-.6 1Z"/></symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2m10-10h-2M4 12H2m17.07 7.07-1.41-1.41M6.34 6.34 4.93 4.93m14.14 0-1.41 1.41M6.34 17.66l-1.41 1.41"/></symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3c0 .3 0 .6.05.9A7 7 0 0 0 20.1 12c.3.05.6.05.9.79Z"/></symbol>
+    <symbol id="icon-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.13-3.36L23 10M1 14l5.36 4.36A9 9 0 0 0 20.49 15"/></symbol>
+    <symbol id="icon-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51 15.42 17.49M15.41 6.51 8.59 10.49"/></symbol>
+    <symbol id="icon-pdf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h2a2 2 0 0 1 0 4H8zm8 0h-2v4m2-2h-2"/></symbol>
+  </svg>
+
+  <header class="app-header">
+    <div class="brand-wrap">
+      <img src="icon-192.png" alt="RB TAXI" class="brand-icon" />
+      <div class="brand-copy">
+        <div class="eyebrow">RB TAXI HODONÍN</div>
+        <div class="brand-title">Výčetka řidiče</div>
+        <div id="appVersion" class="app-version">Verze se načítá</div>
+      </div>
+    </div>
+
+    <div class="header-actions-wrap">
+      <div class="header-status-stack">
+        <div id="headerStatus" class="header-status is-neutral"><span class="status-dot"></span><span id="headerStatusText">Připraveno k výpočtu</span></div>
+        <div id="networkStatus" class="network-status is-online"><span class="status-dot"></span><span>Online</span></div>
+      </div>
+      <div class="header-actions">
+        <button id="themeToggle" type="button" class="icon-button secondary" aria-label="Přepnout motiv"></button>
+        <button id="settingsBtn" type="button" class="icon-button secondary" aria-label="Nastavení">
+          <svg class="icon"><use href="#icon-settings"></use></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="pwaBanner" class="install-banner hidden">
+      <div>
+        <div class="install-title">Přidat aplikaci na plochu?</div>
+        <div class="install-text" id="installText">Na mobilu a tabletu se bude spouštět rychleji a působí jako nativní appka.</div>
+        <div class="install-text install-ios-help hidden" id="pwaIosHelp">Na iPhonu otevři v Safari: Sdílet → Přidat na plochu.</div>
+      </div>
+      <button id="installPwaBtn" type="button" class="primary">Instalovat</button>
+    </section>
+
+    <div id="appNotice" class="app-notice hidden" role="status" aria-live="polite"><span id="appNoticeText"></span><button id="appNoticeAction" type="button" class="notice-action hidden"></button></div>
+
+    <section id="calcShell" class="glass-shell">
+      <div class="shell-topbar compact">
+        <div>
+          <div class="shell-title">Výpočet směny</div>
+          <div class="shell-subtitle">Vyplň směnu a jedním klikem vytvoř čistou výčetku.</div>
+        </div>
+      </div>
+
+      <form id="calcForm" novalidate>
+        <div class="section-heading">Základní údaje</div>
+        <div class="form-grid form-grid-3">
+          <label>
+            <span class="label-text"><svg class="icon"><use href="#icon-user"></use></svg> Řidič</span>
+            <input type="text" id="driverName" name="driverName" autocomplete="name" placeholder="Jméno řidiče" required />
+          </label>
+          <label>
+            <span class="label-text"><svg class="icon"><use href="#icon-clock"></use></svg> Typ směny</span>
+            <select id="shiftType" name="shiftType" autocomplete="off">
+              <option value="den">Denní</option>
+              <option value="noc">Noční</option>
+              <option value="odpo">Odpolední</option>
+              <option value="pul">1/2 směna</option>
+            </select>
+          </label>
+          <label>
+            <span class="label-text"><svg class="icon"><use href="#icon-car"></use></svg> RZ vozidla</span>
+            <select id="rz" name="rz" autocomplete="off">
+              <option value="">— vyberte RZ —</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="section-heading">Kilometry</div>
+        <div class="form-grid form-grid-3">
+          <label>
+            <span class="label-text"><svg class="icon"><use href="#icon-flag"></use></svg> Počáteční km</span>
+            <input type="number" id="kmStart" name="kmStart" autocomplete="off" inputmode="numeric" required />
+          </label>
+          <label>
+            <span class="label-text"><svg class="icon"><use href="#icon-flag"></use></svg> Konečné km</span>
+            <input type="number" id="kmEnd" name="kmEnd" autocomplete="off" inputmode="numeric" required />
+          </label>
+          <label>
+            <span class="label-text"><svg class="icon"><use href="#icon-road"></use></svg> Najeté km (auto)</span>
+            <input type="number" id="kmReal" name="kmReal" autocomplete="off" readonly class="readonly-field" />
+          </label>
+        </div>
+
+        <div class="live-strip">
+          <div class="live-chip">
+            <span>Účtované km</span>
+            <strong id="liveUctovane">0</strong>
+          </div>
+          <div class="live-chip">
+            <span>KM smluvní</span>
+            <strong id="liveSmluvni">0</strong>
+          </div>
+        </div>
+
+        <div id="kpiStrip" class="kpi-strip is-single">
+          <div class="kpi-card">
+            <span>Netto po přístavném</span>
+            <strong id="liveNetto">0 Kč</strong>
+          </div>
+          <div id="liveDeltaCard" class="kpi-card hidden">
+            <span>Rozdíl vs minimum</span>
+            <strong id="liveDelta">—</strong>
+          </div>
+        </div>
+
+        <div class="status-meter" id="liveStatus">Vyplň údaje směny a přehled se dopočítá automaticky.</div>
+
+        <div class="section-heading">Finance</div>
+        <div class="form-grid form-grid-2">
+          <label><span class="label-text"><svg class="icon"><use href="#icon-cash"></use></svg> Tržba (Kč)</span><input type="number" id="trzba" name="trzba" autocomplete="off" min="0" step="1" inputmode="numeric" required /></label>
+          <label><span class="label-text"><svg class="icon"><use href="#icon-flag"></use></svg> Přístavné (Kč)</span><input type="number" id="pristavne" name="pristavne" autocomplete="off" min="0" step="1" inputmode="numeric" aria-describedby="pristavneHelp" /><small id="pristavneHelp" class="field-hint">Přístavné se nepočítá do provize řidiče, ale zůstává v částce k odevzdání.</small></label>
+          <label><span class="label-text"><svg class="icon"><use href="#icon-fuel"></use></svg> Palivo (Kč)</span><input type="number" id="palivo" name="palivo" autocomplete="off" min="0" step="1" inputmode="numeric" /></label>
+          <label><span class="label-text"><svg class="icon"><use href="#icon-wash"></use></svg> Mytí (Kč)</span><input type="number" id="myti" name="myti" autocomplete="off" min="0" step="1" inputmode="numeric" /></label>
+          <label><span class="label-text"><svg class="icon"><use href="#icon-card"></use></svg> Kartou (Kč)</span><input type="number" id="kartou" name="kartou" autocomplete="off" min="0" step="1" inputmode="numeric" /></label>
+          <label><span class="label-text"><svg class="icon"><use href="#icon-doc"></use></svg> Fakturou (Kč)</span><input type="number" id="fakturou" name="fakturou" autocomplete="off" min="0" step="1" inputmode="numeric" /></label>
+          <label><span class="label-text"><svg class="icon"><use href="#icon-doc"></use></svg> Jiné (Kč)</span><input type="number" id="jine" name="jine" autocomplete="off" min="0" step="1" inputmode="numeric" /></label>
+          <label><span class="label-text"><svg class="icon"><use href="#icon-cash"></use></svg> Celá hotovost u sebe (Kč)</span><input type="number" id="cashActual" name="cashActual" autocomplete="off" min="0" step="1" inputmode="numeric" aria-describedby="cashActualHelp" /><small id="cashActualHelp" class="field-hint">Zadej všechnu hotovost, kterou máš u sebe před oddělením výplaty. Přebytek se zobrazí jako dýško.</small></label>
+        </div>
+        <div class="cash-check-panel" id="cashCheckPanel">
+          <div class="status-meter cash-check" id="cashCheckStatus">Celou hotovost můžeš nechat prázdnou, kontrola dýška se pak přeskočí.</div>
+          <div class="cash-breakdown hidden" id="cashCheckBreakdown">
+            <div><span>Má být u sebe</span><strong id="cashExpected">0 Kč</strong></div>
+            <div><span>Celkem u sebe</span><strong id="cashActualLive">0 Kč</strong></div>
+            <div><span>Dýško / rozdíl</span><strong id="cashDiffLive">0 Kč</strong></div>
+          </div>
+        </div>
+
+        <div class="section-heading">Smluvní jízdy</div>
+        <div class="form-grid form-grid-2">
+          <label><span class="label-text"><svg class="icon"><use href="#icon-doc"></use></svg> IAC (počet jízd)</span><input type="number" id="iacCount" name="iacCount" autocomplete="off" min="0" step="1" inputmode="numeric" placeholder="0" /></label>
+          <label><span class="label-text"><svg class="icon"><use href="#icon-doc"></use></svg> SHKM (počet jízd)</span><input type="number" id="shkmCount" name="shkmCount" autocomplete="off" min="0" step="1" inputmode="numeric" placeholder="0" /></label>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="primary"><svg class="icon"><use href="#icon-cash"></use></svg> Vypočítat výčetku</button>
+          <button type="button" id="resetBtn" class="secondary"><svg class="icon"><use href="#icon-refresh"></use></svg> Reset</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="output" class="hidden"></section>
+
+    <div id="actions" class="action-stack hidden">
+      <div class="action-copy">
+        <strong>Výčetka je připravená</strong>
+        <span>Sdílej obrázek do zprávy, nebo stáhni PDF pro archiv.</span>
+      </div>
+      <button type="button" id="editShiftBtn" class="secondary quiet-action"><svg class="icon"><use href="#icon-doc"></use></svg> Upravit údaje</button>
+      <button type="button" id="newShiftBtn" class="secondary quiet-action"><svg class="icon"><use href="#icon-refresh"></use></svg> Nová směna</button>
+      <button type="button" id="shareImgBtn" class="primary main-export-action"><svg class="icon"><use href="#icon-share"></use></svg> Sdílet výčetku</button>
+      <button type="button" id="pdfExport" class="secondary export-action"><svg class="icon"><use href="#icon-pdf"></use></svg> Export do PDF</button>
+    </div>
+
+    <section class="bottom-dashboard" aria-label="Souhrn směny">
+      <section class="command-rail">
+        <article class="command-card command-status" id="commandStatusCard">
+          <span>Stav směny</span>
+          <strong id="liveShiftBadge">Připraveno</strong>
+          <small id="livePayoutMode">Čeká na data</small>
+        </article>
+        <article class="command-card">
+          <span>Tržba</span>
+          <strong id="liveGross">0 Kč</strong>
+          <small>vstup směny</small>
+        </article>
+        <article class="command-card">
+          <span>Nehotovost</span>
+          <strong id="liveNonCash">0 Kč</strong>
+          <small>kartou + fakturou</small>
+        </article>
+        <article class="command-card">
+          <span>Provozní náklady</span>
+          <strong id="liveCosts">0 Kč</strong>
+          <small>palivo + mytí + jiné</small>
+        </article>
+        <article class="command-card accent-command">
+          <span>K odevzdání</span>
+          <strong id="liveDesk">0 Kč</strong>
+          <small>bez doplatku</small>
+        </article>
+        <article class="command-card accent-command soft-gold">
+          <span>Celkem</span>
+          <strong id="liveCelkem">0 Kč</strong>
+          <small>s doplatkem</small>
+        </article>
+      </section>
+
+      <section class="ops-bar">
+        <article class="ops-item">
+          <span>Provize</span>
+          <strong id="heroComm">30 %</strong>
+        </article>
+        <article class="ops-item">
+          <span>Fix plná</span>
+          <strong id="heroFull">1000 Kč</strong>
+        </article>
+        <article class="ops-item">
+          <span>Fix 1/2</span>
+          <strong id="heroHalf">500 Kč</strong>
+        </article>
+        <article class="ops-item ops-item-status">
+          <span>Stav vůči minimu</span>
+          <strong id="heroStatusText">Čeká na data směny</strong>
+        </article>
+      </section>
+    </section>
+  </main>
+
+  <div id="settingsModal" class="hidden modal-overlay" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-badge">Parametry výpočtu</div>
+      <h2 id="settingsTitle">Nastavení výpočtu</h2>
+      <p class="modal-text">Uprav provizi a fixy. Změny se hned promítnou do živého přehledu i finální výčetky.</p>
+      <label>
+        <span class="label-text"><svg class="icon"><use href="#icon-cash"></use></svg> Provize z tržby (%)</span>
+        <input type="number" id="setComm" name="setComm" autocomplete="off" min="1" max="100" step="1" inputmode="numeric" />
+      </label>
+      <label>
+        <span class="label-text"><svg class="icon"><use href="#icon-cash"></use></svg> Fix plná směna (Kč)</span>
+        <input type="number" id="setFull" name="setFull" autocomplete="off" min="0" step="10" inputmode="numeric" />
+      </label>
+      <label>
+        <span class="label-text"><svg class="icon"><use href="#icon-cash"></use></svg> Fix 1/2 směna (Kč)</span>
+        <input type="number" id="setHalf" name="setHalf" autocomplete="off" min="0" step="10" inputmode="numeric" />
+      </label>
+      <label>
+        <span class="label-text"><svg class="icon"><use href="#icon-car"></use></svg> RZ vozidel (jedno na řádek)</span>
+        <textarea id="setRzList" name="setRzList" autocomplete="off" rows="5" style="width:100%;border-radius:var(--radius-lg);border:1px solid var(--line);background:rgba(255,255,255,0.055);color:var(--text);padding:10px 14px;font-size:15px;font-family:inherit;resize:vertical;line-height:1.6;" placeholder="1BU0299&#10;1BU0060&#10;2BT6881"></textarea>
+        <small class="field-hint">Každé RZ na samostatný řádek. Po uložení se seznam vozidel ihned aktualizuje.</small>
+      </label>
+      <div class="modal-actions">
+        <button id="saveSettingsBtn" class="primary" type="button">Uložit</button>
+        <button id="closeSettingsBtn" class="secondary" type="button">Zavřít</button>
+      </div>
+      <div class="modal-actions modal-actions-tools">
+        <button id="exportSelfTestBtn" class="secondary" type="button">Otestovat export</button>
+        <button id="resetAppBtn" class="secondary danger-button" type="button">Načíst nejnovější verzi</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
